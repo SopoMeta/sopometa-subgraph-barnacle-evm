@@ -28,7 +28,7 @@ dataSources:
         - handler: handleCall
           kind: substrate/CallHandler
   - kind: substrate/FrontierEvm
-    startBlock: 1
+    startBlock: 280000
     processor:
       file: './node_modules/@subql/contract-processors/dist/frontierEvm.js'
       options:
