@@ -1,0 +1,37 @@
+{
+  "name": "sopometa-721",
+  "version": "0.0.4",
+  "description": "This SubQuery project can be use as a starting point for Moonbeam network",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc -b",
+    "prepack": "rm -rf dist && npm build",
+    "test": "jest",
+    "codegen": "./node_modules/.bin/subql codegen"
+  },
+  "homepage": "https://github.com/subquery/moonbeam-subql-starter",
+  "repository": "github:subquery/moonbeam-subql-starter",
+  "files": [
+    "dist",
+    "schema.graphql",
+    "project.yaml"
+  ],
+  "author": "sopometa",
+  "license": "MIT",
+  "devDependencies": {
+    "@polkadot/api": "^7.12.1",
+    "@subql/cli": "latest",
+    "@subql/types": "latest",
+    "moonbeam-types-bundle": "^2.0.3",
+    "typescript": "4.3.2"
+  },
+  "resolutions": {
+    "ipfs-unixfs": "6.0.9"
+  },
+  "exports": {
+    "chaintypes": "src/chaintypes.ts"
+  },
+  "dependencies": {
+    "@subql/contract-processors": "^0.6.0"
+  }
+}

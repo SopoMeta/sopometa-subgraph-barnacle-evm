@@ -1,0 +1,49 @@
+specVersion: 0.2.0
+name: sopometa-721
+version: 0.0.4
+description: This SubQuery project can be use as a starting point for Moonbeam network
+repository: 'https://github.com/SopoMeta/sopometa-721'
+schema:
+  file: ./schema.graphql
+network:
+  endpoint: >-
+    wss://gateway.testnet.octopus.network/barnacle-evm/wj1hhcverunusc35jifki19otd4od1n5
+  genesisHash: '0xbd46443c4c65faf52b5f61b480e6dc693adffd498bd91d93c05e9d797fd61216'
+  dictionary: 'https://api.subquery.network/sq/subquery/moonbeam-dictionary'
+  chaintypes:
+    file: ./dist/chaintypes.js
+dataSources:
+  - kind: substrate/Runtime
+    startBlock: 1
+    mapping:
+      file: ./dist/index.js
+      handlers:
+        - handler: handleBlock
+          kind: substrate/BlockHandler
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: balances
+            method: Deposit
+        - handler: handleCall
+          kind: substrate/CallHandler
+  - kind: substrate/FrontierEvm
+    startBlock: 1
+    processor:
+      file: './node_modules/@subql/contract-processors/dist/frontierEvm.js'
+      options:
+        # Must be a key of assets
+        abi: erc721
+        ## The contract that emitted the event
+        address: '0x598efcBD0B5b4Fd0142bEAae1a38f6Bd4d8a218d'
+    assets:
+      erc721:
+        file: './erc721.abi.json'
+    mapping:
+      file: './dist/index.js'
+      handlers:
+        - handler: handleTransferEvent
+          kind: substrate/FrontierEvmEvent
+          filter:
+            topics:
+              - Transfer(address indexed from,address indexed to,uint256 tokenId)
