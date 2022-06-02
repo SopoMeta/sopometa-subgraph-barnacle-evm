@@ -13,7 +13,7 @@ export async function handleTransferEvent(event: FrontierEvmEvent<TransferEventA
 
   if (from.toLowerCase() === AddressZero.toLowerCase()) {
     // Mint NFT
-    const transaction = new Transaction(tokenId.toString())
+    const transaction = new Transaction(event.transactionHash)
 
     transaction.tokenId = tokenId.toBigInt()
     transaction.from = from
@@ -23,6 +23,6 @@ export async function handleTransferEvent(event: FrontierEvmEvent<TransferEventA
     await transaction.save()
   } else if (to.toLowerCase() === AddressZero.toLowerCase()) {
     // Burn NFT
-    Transaction.remove(tokenId.toString())
+    Transaction.remove(event.transactionHash)
   }
 }

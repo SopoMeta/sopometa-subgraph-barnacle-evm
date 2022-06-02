@@ -33,3 +33,48 @@ dataSources:
           filter:
             topics:
               - Transfer(address indexed from,address indexed to,uint256 tokenId)
+  - kind: substrate/FrontierEvm
+    startBlock: 280000
+    processor:
+      file: './node_modules/@subql/contract-processors/dist/frontierEvm.js'
+      options:
+        # Must be a key of assets
+        abi: marketplace
+        ## The contract that emitted the event
+        address: '0x746DFE0F96789e62CECeeA3CA2a9b5556b3AaD6c'
+    assets:
+      marketplace:
+        file: './marketplace.abi.json'
+    mapping:
+      file: './dist/index.js'
+      handlers:
+        - handler: handleListedEvent
+          kind: substrate/FrontierEvmEvent
+          filter:
+            topics:
+              - Listed(address indexed from,address to,uint256 indexed sopo_id,uint256 nft_id,address indexed nft_programe_address)
+        - handler: handleListAndSellEvent
+          kind: substrate/FrontierEvmEvent
+          filter:
+            topics:
+              - Listandforsell(address indexed from,address to,uint256 sopo_id,uint256 nft_id,address indexed nft_programe_address,uint256 indexed price)
+        - handler: handleSellEvent
+          kind: substrate/FrontierEvmEvent
+          filter:
+            topics:
+              - Forsell(uint256 indexed sopo_id,uint256 indexed price)
+        - handler: handleNewOfferEvent
+          kind: substrate/FrontierEvmEvent
+          filter:
+            topics:
+              - Newoffer(address indexed from,address indexed to,uint256 sopo_id,uint256 indexed price)
+        - handler: handleWithdrawEvent
+          kind: substrate/FrontierEvmEvent
+          filter:
+            topics:
+              - Withdraw(address indexed from,address to,uint256 sopo_id,uint256 nft_id,address indexed nft_programe_address,uint32 indexed withdrawout_at)
+        - handler: handleSelledEvent
+          kind: substrate/FrontierEvmEvent
+          filter:
+            topics:
+              - Selled(address indexed from,address to,uint256 sopo_id,uint32 indexed selled_at,uint256 nft_id,address indexed nft_programe_address,address owner, uint256 price)
