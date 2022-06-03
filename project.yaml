@@ -33,6 +33,11 @@ dataSources:
           filter:
             topics:
               - Transfer(address indexed from,address indexed to,uint256 tokenId)
+        - handler: handleMintEvent
+          kind: substrate/FrontierEvmEvent
+          filter:
+            topics:
+              - Newmint(address indexed owner,uint256 indexed nft_id,string indexed tokenuri)
   - kind: substrate/FrontierEvm
     startBlock: 317000
     processor:

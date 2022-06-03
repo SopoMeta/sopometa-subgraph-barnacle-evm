@@ -47,3 +47,11 @@ type Offer @entity {
   maker: String!
   price: Float
 }
+
+type NFT @entity {
+  id: ID!
+
+  tokenId: BigInt!
+  owner: String!
+  tokenUri: String!
+}
