@@ -12,7 +12,7 @@ type MintEventArgs = [string, BigNumber, string] & { owner: string; nft_id: BigN
 
 export async function handleMintEvent(event: FrontierEvmEvent<MintEventArgs>): Promise<void> {
   const { owner, nft_id, tokenuri } = event.args
-  const nft = new Nft(event.address + '-' + nft_id.toNumber())
+  const nft = new Nft(event.address + '-' + event.args.nft_id.toString())
 
   nft.owner = owner
   nft.tokenId = nft_id.toBigInt()
