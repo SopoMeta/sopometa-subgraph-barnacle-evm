@@ -1,4 +1,4 @@
-import { Transaction, NFT } from '../types'
+import { Nft } from '../types'
 import { FrontierEvmEvent } from '@subql/contract-processors/dist/frontierEvm'
 
 import { BigNumber } from 'ethers'
@@ -12,7 +12,7 @@ type MintEventArgs = [string, BigNumber, string] & { owner: string; nft_id: BigN
 
 export async function handleMintEvent(event: FrontierEvmEvent<MintEventArgs>): Promise<void> {
   const { owner, nft_id, tokenuri } = event.args
-  const nft = new NFT(nft_id.toString())
+  const nft = new Nft(event.address + '-' + nft_id.toString())
 
   nft.owner = owner
   nft.tokenId = nft_id.toBigInt()
@@ -23,7 +23,7 @@ export async function handleMintEvent(event: FrontierEvmEvent<MintEventArgs>): P
 
 export async function handleTransferEvent(event: FrontierEvmEvent<TransferEventArgs>): Promise<void> {
   const { tokenId, from, to } = event.args
-  const nft = await NFT.get(tokenId.toString())
+  const nft = await Nft.get(event.address + '-' + tokenId.toString())
 
   // Normally transfer
   if (from.toLowerCase() !== AddressZero.toLowerCase()) {
@@ -34,6 +34,6 @@ export async function handleTransferEvent(event: FrontierEvmEvent<TransferEventA
 
   // Burn token
   if (to.toLowerCase() === AddressZero.toLowerCase()) {
-    await NFT.remove(tokenId.toString())
+    await Nft.remove(event.address + '-' + tokenId.toString())
   }
 }
