@@ -1,5 +1,5 @@
-import { Transaction, Minted } from '../types'
-import { FrontierEvmCall, FrontierEvmEvent } from '@subql/contract-processors/dist/frontierEvm'
+import { Transaction } from '../types'
+import { FrontierEvmEvent } from '@subql/contract-processors/dist/frontierEvm'
 
 import { BigNumber } from 'ethers'
 
