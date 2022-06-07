@@ -10,8 +10,8 @@ type TransferEventArgs = [string, string, BigNumber] & { from: string; to: strin
 export async function handleTransferEvent(event: FrontierEvmEvent<TransferEventArgs>): Promise<void> {
   const { tokenId, from, to } = event.args
 
-  // Mint
   if (from.toLowerCase() === AddressZero.toLowerCase()) {
+    // Mint
     const nft = new Nft(event.address + '-' + tokenId)
 
     nft.owner = to
@@ -19,12 +19,16 @@ export async function handleTransferEvent(event: FrontierEvmEvent<TransferEventA
     nft.contractAddress = event.address
 
     await nft.save()
-  }
-
-  // Burn
-  if (to.toLowerCase() === AddressZero.toLowerCase()){
+  } else if (to.toLowerCase() === AddressZero.toLowerCase()) {
+    // Burn
     const nftId = event.address + '-' + tokenId
     await Nft.remove(nftId)
+  } else {
+    // Transfer
+    const nft = await Nft.get(event.address + '-' + tokenId)
+    nft.owner = to
+
+    await nft.save()
   }
 }
 
