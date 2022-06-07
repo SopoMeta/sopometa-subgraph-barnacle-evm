@@ -1,12 +1,10 @@
-type Transaction @entity {
+type Nft @entity {
 
   id: ID! # Transaction hash
 
   tokenId: BigInt!
 
-  to: String!
-
-  from: String!
+  owner: String!
 
   contractAddress: String!
 }
@@ -48,10 +46,3 @@ type Offer @entity {
   price: Float
 }
 
-type Nft @entity {
-  id: ID!
-
-  tokenId: BigInt!
-  owner: String!
-  tokenUri: String!
-}

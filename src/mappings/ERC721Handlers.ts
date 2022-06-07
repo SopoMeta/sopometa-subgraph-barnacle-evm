@@ -1,4 +1,4 @@
-import { Transaction } from '../types'
+import { Nft } from '../types'
 import { FrontierEvmEvent } from '@subql/contract-processors/dist/frontierEvm'
 
 import { BigNumber } from 'ethers'
@@ -12,11 +12,10 @@ export async function handleTransferEvent(event: FrontierEvmEvent<TransferEventA
 
   // Mint
   if (from.toLowerCase() === AddressZero.toLowerCase()) {
-    const nft = new Transaction(event.address + '-' + tokenId)
+    const nft = new Nft(event.address + '-' + tokenId)
 
-    nft.from = from
+    nft.owner = to
     nft.tokenId = tokenId.toBigInt()
-    nft.to = to
     nft.contractAddress = event.address
 
     await nft.save()
@@ -25,7 +24,7 @@ export async function handleTransferEvent(event: FrontierEvmEvent<TransferEventA
   // Burn
   if (to.toLowerCase() === AddressZero.toLowerCase()){
     const nftId = event.address + '-' + tokenId
-    await Transaction.remove(nftId)
+    await Nft.remove(nftId)
   }
 }
 
