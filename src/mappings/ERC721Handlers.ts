@@ -1,5 +1,5 @@
-import { Nft } from '../types'
-import { FrontierEvmEvent } from '@subql/contract-processors/dist/frontierEvm'
+import { Transaction, Minted } from '../types'
+import { FrontierEvmCall, FrontierEvmEvent } from '@subql/contract-processors/dist/frontierEvm'
 
 import { BigNumber } from 'ethers'
 
@@ -7,33 +7,33 @@ import { AddressZero } from '../const'
 
 // Setup types from ABI
 type TransferEventArgs = [string, string, BigNumber] & { from: string; to: string; tokenId: BigNumber }
-
-type MintEventArgs = [string, BigNumber, string] & { owner: string; nft_id: BigNumber; tokenuri: string }
-
-export async function handleMintEvent(event: FrontierEvmEvent<MintEventArgs>): Promise<void> {
-  const { owner, nft_id, tokenuri } = event.args
-  const nft = new Nft(event.address + '-' + event.args.nft_id.toString())
-
-  nft.owner = owner
-  nft.tokenId = nft_id.toBigInt()
-  nft.tokenUri = tokenuri
-
-  await nft.save()
-}
-
 export async function handleTransferEvent(event: FrontierEvmEvent<TransferEventArgs>): Promise<void> {
   const { tokenId, from, to } = event.args
-  const nft = await Nft.get(event.address + '-' + tokenId.toString())
 
-  // Normally transfer
-  if (from.toLowerCase() !== AddressZero.toLowerCase()) {
-    nft.owner = to
+  // Mint
+  if (from.toLowerCase() === AddressZero.toLowerCase()) {
+    const nft = new Transaction(event.address + '-' + tokenId)
+
+    nft.from = from
+    nft.tokenId = tokenId.toBigInt()
+    nft.to = to
+    nft.contractAddress = event.address
 
     await nft.save()
   }
 
-  // Burn token
-  if (to.toLowerCase() === AddressZero.toLowerCase()) {
-    await Nft.remove(event.address + '-' + tokenId.toString())
+  // Burn
+  if (to.toLowerCase() === AddressZero.toLowerCase()){
+    const nftId = event.address + '-' + tokenId
+    await Transaction.remove(nftId)
   }
 }
+
+// export async function handleMintCall(callArgs: FrontierEvmCall<MintCallArgs>): Promise<void> {
+//   const minted = new Minted(callArgs.hash)
+
+//   minted.to = callArgs.args.owner
+//   minted.tokenUri = callArgs.args.tokenuri
+
+//   minted.save()
+// }
